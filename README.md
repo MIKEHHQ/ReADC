@@ -1,6 +1,6 @@
 # ReADC: Reconfigurable Analog-to-Digital Converter and High Performance ADC Simulator
 
-This repository contains the implementation of ReADC (Reconfigurable Analog-to-Digital Converter) with adaptive quantization for efficient and accurate compute-in-memory systems, along with a high-performance parallel ADC simulator.
+This repository contains the implementation of ReADC (Reconfigurable Analog-to-Digital Converter) with memristor-based adaptive quantization for efficient and accurate compute-in-memory systems, along with a high-performance parallel ADC simulator.
 
 ## Paper Reference
 
@@ -13,10 +13,10 @@ DOI: https://doi.org/10.1038/s41467-025-65233-w
 
 ReADC addresses the critical bottleneck of analog-to-digital conversion in compute-in-memory (CIM) systems by introducing:
 
-1. **Adaptive Quantization**: Hardware-friendly adaptive quantization using programmable memristor boundaries
-2. **Super-Resolution Strategy**: Utilizing device variations to improve quantization accuracy
-3. **High-Performance Simulator**: Parallel ADC simulation framework that dramatically accelerates CIM system simulation
-4. **Hardware Efficiency**: 15.1x improvement in energy efficiency and 12.9x reduction in area compared to state-of-the-art designs
+1. **Hardware Efficiency**: 15.1x improvement in energy efficiency and 12.9x reduction in area compared to state-of-the-art designs
+2. **Adaptive Quantization**: Hardware-friendly adaptive quantization using programmable memristor boundaries
+3. **Super-Resolution Strategy**: Utilizing device variations to improve quantization accuracy
+4. **High-Performance Simulator**: Parallel ADC simulation framework that dramatically accelerates CIM system simulation
 
 ## Key Innovations
 
@@ -281,6 +281,6 @@ For questions or collaborations, please contact:
 
 ## Acknowledgments
 
-This work was supported by the Theme-based Research Scheme (TRS) project T45-701/22-R, the National Natural Science Foundation of China, Croucher Foundation, and the General Research Fund (GRF) projects of the Research Grants Council (RGC), Hong Kong SAR.
+This work was supported in part by the Theme-based Research Scheme(TRS) project T45-701/22-R (N.W., C.L. & W.Z.), the National NaturalScience Foundation of China (62404187 (Z.L.), 62122005 (C.L.)), Crou-cher Foundation (C.L.), and the General Research Fund (GRF) Project(17200925 (Z.L.), 17203224 (N.W.), 17207925 (C.L.)) of the ResearchGrants Council (RGC), Hong Kong SAR.
 
 We would like to express our gratitude to Professor Shanshi Huang for the valuable email communications during the early stages of this project.
