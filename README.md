@@ -1,4 +1,4 @@
-# ReADC: Reconfigurable Analog-to-Digital Converter
+# ReADC: Reconfigurable Analog-to-Digital Converter and High Performance ADC Simulator
 
 This repository contains the implementation of ReADC (Reconfigurable Analog-to-Digital Converter) with adaptive quantization for efficient and accurate compute-in-memory systems, along with a high-performance parallel ADC simulator.
 
@@ -57,9 +57,13 @@ ReADC/
 1. Clone this repository:
 
    ```bash
+
+   ```
+
 git clone https://github.com/MIKEHHQ/READC.git
    cd ReADC
-   ```
+
+```
 
 2. Install dependencies:
 
@@ -171,25 +175,25 @@ from ReADC.readc_quantizer import adaptive_quantize, super_resolution_quantize
 class QLinear(nn.Linear):
     def forward(self, input):
         # ... existing NeuroSim code for weight processing ...
-        
+      
         if self.inference == 3:  # Uniform Quantization mode
             output = F.linear(input, weight, self.bias)
             with torch.no_grad():
                 # Replace this line:
                 # output = wage_quantizer.ReNonLinearQuantizeOut(output, self.ADCprecision, self.bound, self.out)
-                
+              
                 # With ReADC function:
                 output = adaptive_quantize(output, self.ADCprecision, self.bound, self.out)
-                
+              
         elif self.inference == 4:  # Adaptive Quantization mode  
             output = F.linear(input, weight, self.bias)
             with torch.no_grad():
                 # Replace this line:
                 # output = wage_quantizer.MultiReADC(output, self.ADCprecision, self.bound, self.out)
-                
+              
                 # With ReADC super-resolution function:
                 output = super_resolution_quantize(output, self.ADCprecision, self.bound, self.out)
-        
+      
         # ... rest of existing NeuroSim code ...
         return output
 
