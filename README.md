@@ -2,7 +2,6 @@
 
 This repository contains the source code and data for the paper "Memristor-based adaptive analog-to-digital conversion for efficient and accurate compute-in-memory".
 
-
 ## Environment Requirements
 
 - Python 3.9
@@ -22,15 +21,15 @@ Here is an overview of the repository structure:
 
 ## Installation
 
-1.  Clone the repository:
-    ```bash
-    git clone https://github.com/MIKEHHQ/ReADC.git
-    cd ReADC
-    ```
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/MIKEHHQ/ReADC.git
+   cd ReADC
+   ```
 
 ## Usage
 
-(Please provide instructions on how to run your simulations or experiments.)
+Please  refer the README.md in the Code/ directory.
 
 ## Data
 
