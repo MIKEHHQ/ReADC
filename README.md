@@ -48,7 +48,6 @@ ReADC/
 │   ├── test_readc.py           # Comprehensive test suite
 │   └── __init__.py             # Package initialization
 ├── Data/                       # Experimental data and results
-├── Paper/                      # Paper-related materials
 └── README.md                   # This file
 ```
 
@@ -56,14 +55,11 @@ ReADC/
 
 1. Clone this repository:
 
-   ```bash
-
-   ```
-
+```bash
 git clone https://github.com/MIKEHHQ/READC.git
-   cd ReADC
-
+cd ReADC
 ```
+
 
 2. Install dependencies:
 
