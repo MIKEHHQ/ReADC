@@ -56,10 +56,10 @@ ReADC/
 
 1. Clone this repository:
 
-```bash
+   ```bash
 git clone https://github.com/MIKEHHQ/READC.git
-cd ReADC
-```
+   cd ReADC
+   ```
 
 2. Install dependencies:
 
@@ -158,99 +158,64 @@ Based on our experiments:
 
 ## Integration with NeuroSim
 
-ReADC can be integrated with NeuroSim-based compute-in-memory simulators to provide high-performance adaptive quantization (Speed Up!). Below is an example of how to integrate ReADC quantization functions into existing CIM simulation frameworks.
+ReADC can be integrated with NeuroSim-based compute-in-memory simulators to provide high-performance adaptive quantization. Below is an example of how to integrate ReADC quantization functions into existing CIM simulation frameworks.
 
 ### Integration Example
 
+The main integration point is in the forward pass of NeuroSim's quantized layers. Here's how to replace the original ADC quantization calls:
+
 ```python
-# Example integration in a NeuroSim-based CIM layer
-import torch
-import torch.nn as nn
+# In NeuroSim's QLinear forward method (around line 583 in quantization_cpu_np_infer.py)
 from ReADC.readc_quantizer import adaptive_quantize, super_resolution_quantize
+
+class QLinear(nn.Linear):
+    def forward(self, input):
+        # ... existing NeuroSim code for weight processing ...
+        
+        if self.inference == 3:  # Uniform Quantization mode
+            output = F.linear(input, weight, self.bias)
+            with torch.no_grad():
+                # Replace this line:
+                # output = wage_quantizer.ReNonLinearQuantizeOut(output, self.ADCprecision, self.bound, self.out)
+                
+                # With ReADC function:
+                output = adaptive_quantize(output, self.ADCprecision, self.bound, self.out)
+                
+        elif self.inference == 4:  # Adaptive Quantization mode  
+            output = F.linear(input, weight, self.bias)
+            with torch.no_grad():
+                # Replace this line:
+                # output = wage_quantizer.MultiReADC(output, self.ADCprecision, self.bound, self.out)
+                
+                # With ReADC super-resolution function:
+                output = super_resolution_quantize(output, self.ADCprecision, self.bound, self.out)
+        
+        # ... rest of existing NeuroSim code ...
+        return output
+
+# Similar replacement applies to QConv2d layers
+```
+
+### Boundary Optimization Setup
+
+```python
 from ReADC.adaptive_optimization import batch_optimize_quantization
 
-class CIMConv2d(nn.Conv2d):
-    def __init__(self, in_channels, out_channels, kernel_size, 
-                 adc_precision=5, quantization_mode='adaptive', **kwargs):
-        super(CIMConv2d, self).__init__(in_channels, out_channels, kernel_size, **kwargs)
-    
-        self.adc_precision = adc_precision
-        self.quantization_mode = quantization_mode
-        self.boundaries = None
-        self.output_levels = None
-        self.boundary_sets = None  # For super-resolution
-    
-    def set_quantization_parameters(self, boundaries, output_levels, boundary_sets=None):
-        """Set optimized quantization parameters from ReADC optimization."""
-        self.boundaries = boundaries
-        self.output_levels = output_levels
-        self.boundary_sets = boundary_sets
-    
-    def forward(self, input):
-        # Standard convolution operation
-        output = super().forward(input)
-    
-        # Apply ReADC quantization instead of traditional uniform quantization
-        if self.quantization_mode == 'uniform':
-            # Fallback to uniform quantization
-            quantized_output = adaptive_quantize(output, self.adc_precision)
-        
-        elif self.quantization_mode == 'adaptive':
-            # Use adaptive quantization with optimized boundaries
-            quantized_output = adaptive_quantize(
-                output, self.adc_precision, 
-                self.boundaries, self.output_levels
-            )
-        
-        elif self.quantization_mode == 'super_resolution':
-            # Use super-resolution quantization for enhanced accuracy
-            quantized_output = super_resolution_quantize(
-                output, self.adc_precision,
-                self.boundary_sets, self.output_levels
-            )
-        
-        return quantized_output
+# Optimize quantization boundaries using collected activation data
+boundaries_dict, output_levels_dict = batch_optimize_quantization(
+    data_directory='./activation_VGG8/',  # Directory with collected .npy files
+    model_name='VGG8',
+    num_bits=5,
+    sigma=0.01  # Device variation parameter
+)
 
-# Usage example with boundary optimization
-def setup_readc_quantization(model, calibration_data_dir, adc_precision=5):
-    """Setup ReADC quantization for a CIM model."""
-  
-    # Step 1: Optimize quantization boundaries using calibration data
-    boundaries_dict, output_levels_dict = batch_optimize_quantization(
-        calibration_data_dir, 
-        model_name='VGG8',  # or 'ResNet18'
-        num_bits=adc_precision,
-        sigma=0.01,  # Device variation parameter
-        num_adc_variants=2  # For super-resolution
-    )
-  
-    # Step 2: Configure each CIM layer with optimized parameters
-    for name, module in model.named_modules():
-        if isinstance(module, CIMConv2d):
-            # Parse layer identifier from name
-            if 'conv' in name.lower():
-                layer_id = ('C', name.split('conv')[-1].split('.')[0])
-            elif 'fc' in name.lower():
-                layer_id = ('L', name.split('fc')[-1].split('.')[0])
-            else:
-                continue
-            
-            if layer_id in boundaries_dict:
-                module.set_quantization_parameters(
-                    boundaries=boundaries_dict[layer_id][0],  # Use first boundary set
-                    output_levels=output_levels_dict[layer_id],
-                    boundary_sets=boundaries_dict[layer_id]  # All boundary sets for SR
-                )
-            
-    return model
-
-# Example model setup
-model = create_cim_model()  # Your CIM model with CIMConv2d layers
-model = setup_readc_quantization(model, './calibration_data/', adc_precision=5)
-
-# Run inference with ReADC quantization
-with torch.no_grad():
-    output = model(input_data)
+# Set optimized boundaries to NeuroSim layers
+for name, module in model.named_modules():
+    if isinstance(module, (QConv2d, QLinear)):
+        layer_id = parse_layer_id(name)  # Extract layer identifier
+        if layer_id in boundaries_dict:
+            module.bound = boundaries_dict[layer_id][0]  # Boundaries
+            module.out = output_levels_dict[layer_id]    # Output levels
 ```
 
 ### Key Integration Points
@@ -316,6 +281,6 @@ For questions or collaborations, please contact:
 
 ## Acknowledgments
 
-This work was supported in part by the Theme-based Research Scheme(TRS) project T45-701/22-R (N.W., C.L. & W.Z.), the National NaturalScience Foundation of China (62404187 (Z.L.), 62122005 (C.L.)), Crou-cher Foundation (C.L.), and the General Research Fund (GRF) Project(17200925 (Z.L.), 17203224 (N.W.), 17207925 (C.L.)) of the ResearchGrants Council (RGC), Hong Kong SAR.
+This work was supported by the Theme-based Research Scheme (TRS) project T45-701/22-R, the National Natural Science Foundation of China, Croucher Foundation, and the General Research Fund (GRF) projects of the Research Grants Council (RGC), Hong Kong SAR.
 
-We would like to express our gratitude to Professor Shanshi Huang for the valuable email communications during the early stages of this project about Neurosim.
+We would like to express our gratitude to Professor Shanshi Huang for the valuable email communications during the early stages of this project.
