@@ -4,9 +4,8 @@ This repository contains the implementation of ReADC (Reconfigurable Analog-to-D
 
 ## Paper Reference
 
-**"Memristor-based adaptive analog-to-digital conversion for efficient and accurate compute-in-memory"**
-Authors: Haiqiao Hong, Zhiyuan Du, Mingrui Jiang, Ruibin Mao, Yuan Ren, Fuyi Li, Wei Mao, Muyuan Peng, Wei Zhang, Zhengwu Liu, Can Li, Ngai Wong
-Published in Nature Communications
+### Haiqiao Hong, Zhiyuan Du, Mingrui Jiang, Ruibin Mao, Yuan Ren, Fuyi Li, Wei Mao, Muyuan Peng, Wei Zhang, Zhengwu Liu, Can Li, Ngai Wong
+_Nature Communications_, 2025.
 DOI: https://doi.org/10.1038/s41467-025-65233-w
 
 ## Overview
@@ -257,7 +256,7 @@ The test suite includes:
 If you use this code in your research, please cite our paper:
 
 ```bibtex
-@article{hong2025memristor,
+@article{hong2025readc,
   title={Memristor-based adaptive analog-to-digital conversion for efficient and accurate compute-in-memory},
   author={Hong, Haiqiao and Du, Zhiyuan and Jiang, Mingrui and Mao, Ruibin and Ren, Yuan and Li, Fuyi and Mao, Wei and Peng, Muyuan and Zhang, Wei and Liu, Zhengwu and Li, Can and Wong, Ngai},
   journal={Nature Communications},
@@ -265,10 +264,6 @@ If you use this code in your research, please cite our paper:
   doi={10.1038/s41467-025-65233-w}
 }
 ```
-
-## License
-
-This project is licensed under the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License. See the paper for full license details.
 
 ## Contact
 
@@ -283,4 +278,4 @@ For questions or collaborations, please contact:
 
 This work was supported in part by the Theme-based Research Scheme(TRS) project T45-701/22-R (N.W., C.L. & W.Z.), the National NaturalScience Foundation of China (62404187 (Z.L.), 62122005 (C.L.)), Crou-cher Foundation (C.L.), and the General Research Fund (GRF) Project(17200925 (Z.L.), 17203224 (N.W.), 17207925 (C.L.)) of the ResearchGrants Council (RGC), Hong Kong SAR.
 
-We would like to express our gratitude to Professor Shanshi Huang for the valuable email communications during the early stages of this project.
+We would like to express our gratitude to Professor Shanshi Huang for the valuable communications about NeuroSim.
