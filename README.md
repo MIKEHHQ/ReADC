@@ -5,13 +5,15 @@
 
 This repository contains the implementation of ReADC (Reconfigurable Analog-to-Digital Converter) with memristor-based adaptive quantization for efficient and accurate compute-in-memory systems, along with a high-performance parallel ADC simulator.
 
-## Citation
-
 **Haiqiao Hong, Zhiyuan Du, Mingrui Jiang, Ruibin Mao, Yuan Ren, Fuyi Li, Wei Mao, Muyuan Peng, Wei Zhang, Zhengwu Liu, Can Li, Ngai Wong**
 
 *Memristor-based adaptive analog-to-digital conversion for efficient and accurate compute-in-memory*
 
 _Nature Communications_, 2025. DOI: https://doi.org/10.1038/s41467-025-65233-w
+
+<div align="center">
+  <img src='Figure/Logo.png' width="90%"/>
+</div>
 
 ## Table of Contents
 
